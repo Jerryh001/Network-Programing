@@ -5,17 +5,17 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
+using Microsoft.VisualBasic.PowerPacks;
 namespace paint
 {
     public partial class Form1 : Form
     {
         Thread th;
         UdpClient U;
-        ShapeContainer C=new ShapeContainer();
-        ShapeContainer D=new ShapeContainer();
+        ShapeContainer C = new ShapeContainer();
+        ShapeContainer D = new ShapeContainer();
         Point startpoint;
-        int color=3;
+        int color = 3;
         string points;
         public Form1()
         {
@@ -27,7 +27,7 @@ namespace paint
             IPAddress[] ip = Dns.GetHostEntry(name).AddressList;
             foreach (IPAddress it in ip)
             {
-                if(it.AddressFamily==AddressFamily.InterNetwork)
+                if (it.AddressFamily == AddressFamily.InterNetwork)
                 {
                     return it.ToString();
                 }
@@ -37,7 +37,7 @@ namespace paint
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Control.CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false;
             myip.Text = MYIP();
             this.Controls.Add(C);
             this.Controls.Add(D);
@@ -51,33 +51,33 @@ namespace paint
             yourport.ReadOnly = true;
             th = new Thread(listen);
             th.Start();
-            this.MouseDown+=Form1_MouseDown;
+            this.MouseDown += Form1_MouseDown;
         }
         private void listen(object obj)
         {
             int port = int.Parse(myport.Text);
             U = new UdpClient(port);
-            IPEndPoint pt=new IPEndPoint(IPAddress.Parse(myip.Text),port);
-            while(true)
+            IPEndPoint pt = new IPEndPoint(IPAddress.Parse(myip.Text), port);
+            while (true)
             {
                 byte[] b = U.Receive(ref pt);
                 string msg = Encoding.Default.GetString(b);
                 string[] info = msg.Split('@');
                 string[] att = info[0].Split('_');
-                Point[] Ps = new Point[info.Length-1];
-                for(int i=0;i<Ps.Length;i++)
+                Point[] Ps = new Point[info.Length - 1];
+                for (int i = 0; i < Ps.Length; i++)
                 {
-                    string[] xy=info[i+1].Split('_');
+                    string[] xy = info[i + 1].Split('_');
                     Ps[i].X = int.Parse(xy[0]);
                     Ps[i].Y = int.Parse(xy[1]);
                 }
-                for(int i=0;i<Ps.Length-1;i++)
+                for (int i = 0; i < Ps.Length - 1; i++)
                 {
-                    LineShape line=new LineShape();
+                    LineShape line = new LineShape();
                     line.StartPoint = Ps[i];
                     line.EndPoint = Ps[i + 1];
                     line.BorderWidth = int.Parse(att[1]);
-                    if(att[2]=="T")
+                    if (att[2] == "T")
                     {
                         line.BorderStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                     }
@@ -107,7 +107,8 @@ namespace paint
             {
                 U.Close();
                 th.Abort();
-            }catch
+            }
+            catch
             {
 
             }
@@ -117,16 +118,17 @@ namespace paint
         {
             startpoint = e.Location;
             points = color.ToString() + "_" + linew.Text + "_";
-            if(lineinv.Checked)
+            if (lineinv.Checked)
             {
                 points += "T@";
-            }else
+            }
+            else
             {
                 points += "F@";
             }
-            points += startpoint.X.ToString() +"_"+startpoint.Y.ToString();
-            this.MouseMove+=Form1_MouseMove;
-            this.MouseUp+=Form1_MouseUp;
+            points += startpoint.X.ToString() + "_" + startpoint.Y.ToString();
+            this.MouseMove += Form1_MouseMove;
+            this.MouseUp += Form1_MouseUp;
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
@@ -137,7 +139,7 @@ namespace paint
                 line.StartPoint = startpoint;
                 line.EndPoint = e.Location;
                 line.BorderWidth = int.Parse(linew.Text);
-                if(lineinv.Checked)
+                if (lineinv.Checked)
                 {
                     line.BorderStyle = System.Drawing.Drawing2D.DashStyle.Dot;
                 }
@@ -164,16 +166,19 @@ namespace paint
 
         private void CheckedChanged(object sender, EventArgs e)
         {
-            if(radioButton1.Checked)
+            if (radioButton1.Checked)
             {
                 color = 0;
-            }else if(radioButton2.Checked)
+            }
+            else if (radioButton2.Checked)
             {
                 color = 1;
-            }else if(radioButton3.Checked)
+            }
+            else if (radioButton3.Checked)
             {
                 color = 2;
-            }else if(radioButton4.Checked)
+            }
+            else if (radioButton4.Checked)
             {
                 color = 3;
             }
@@ -185,7 +190,7 @@ namespace paint
             this.MouseUp -= Form1_MouseUp;
             int port = int.Parse(yourport.Text);
             UdpClient S = new UdpClient(yourip.Text, port);
-            byte[] b=Encoding.Default.GetBytes(points);
+            byte[] b = Encoding.Default.GetBytes(points);
             S.Send(b, b.Length);
             S.Close();
         }

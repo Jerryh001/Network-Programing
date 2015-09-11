@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace GuessNumber
 {
@@ -28,16 +28,16 @@ namespace GuessNumber
         private void Form1_Load(object sender, EventArgs e)
         {
             myip.Text = MYIP();
-            Control.CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false;
         }
 
         private void button_GO_Click(object sender, EventArgs e)
         {
-            int range = Convert.ToInt32(Math.Pow(10,digit - 1)+1);
+            int range = Convert.ToInt32(Math.Pow(10, digit - 1) + 1);
             if (mytype == usertype.com)
             {
-            rollagain:
-                mynumber.Text = Convert.ToString(rd.Next(range,range*10));
+                rollagain:
+                mynumber.Text = Convert.ToString(rd.Next(range, range * 10));
                 num = mynumber.Text.ToCharArray();
                 for (int i = 0; i < digit; i++)
                 {

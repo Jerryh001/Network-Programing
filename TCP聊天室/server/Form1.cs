@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text;
-using System.Windows.Forms;
+using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
-using System.Collections;
+using System.Windows.Forms;
 namespace server
 {
     public partial class Form1 : Form
@@ -40,7 +40,7 @@ namespace server
             IPEndPoint ep = new IPEndPoint(IPAddress.Parse(myip.Text), int.Parse(myport.Text));
             server = new TcpListener(ep);
             server.Start();
-            while(true)
+            while (true)
             {
                 clinet = server.AcceptSocket();
                 thclinet = new Thread(clilisten);
@@ -52,18 +52,18 @@ namespace server
         {
             Socket s = clinet;
             Thread th = thclinet;
-            while(true)
+            while (true)
             {
                 try
                 {
                     byte[] B = new byte[1024];
                     int length = s.Receive(B);
-                    String msg = Encoding.Default.GetString(B,0,length);
+                    String msg = Encoding.Default.GetString(B, 0, length);
                     char cmd = msg[0];
                     String text = msg.Substring(1);
-                    switch(cmd)
+                    switch (cmd)
                     {
-                        case'0':
+                        case '0':
                             if (ht.ContainsKey(text))
                             {
                                 byte[] B1 = Encoding.Default.GetBytes("-1");
@@ -71,10 +71,11 @@ namespace server
                             }
                             else
                             {
-                                if(text.Substring(0,5)=="admin")
+                                if (text.Substring(0, 5) == "admin")
                                 {
                                     adms = s;
-                                }else
+                                }
+                                else
                                 {
                                     ht.Add(text, s);
                                     onlineuser.Items.Add(text);
@@ -84,7 +85,7 @@ namespace server
                             break;
                         case '1':
                             isfake(text, s);
-                            msg = cmd+text.Substring(1);
+                            msg = cmd + text.Substring(1);
                             BCast(msg);
                             break;
                         case '9':
@@ -107,9 +108,9 @@ namespace server
                 }
             }
         }
-        private void isfake(string text,Socket s)
+        private void isfake(string text, Socket s)
         {
-            if(text[0]=='F')
+            if (text[0] == 'F')
             {
                 byte[] B1 = Encoding.Default.GetBytes("S伺服器通知：請勿以他人身分發言");
                 s.Send(B1, 0, B1.Length, SocketFlags.None);
@@ -127,7 +128,7 @@ namespace server
         private void BCast(string msg)
         {
             byte[] B = Encoding.Default.GetBytes(msg);
-            foreach(Socket user in ht.Values)
+            foreach (Socket user in ht.Values)
             {
                 user.Send(B, 0, B.Length, SocketFlags.None);
             }
@@ -140,7 +141,7 @@ namespace server
 
             }
         }
-        private void sendto(string msg,string user)
+        private void sendto(string msg, string user)
         {
             byte[] B = Encoding.Default.GetBytes(msg);
             ((Socket)ht[user]).Send(B, 0, B.Length, SocketFlags.None);
@@ -182,7 +183,8 @@ namespace server
             try
             {
                 adms.Close();
-            }catch
+            }
+            catch
             { }
             Application.ExitThread();
         }

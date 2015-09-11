@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Text;
-using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace UDPMSN
 {
     public partial class Form1 : Form
     {
-        Thread[] LTh=new Thread[10];
+        Thread[] LTh = new Thread[10];
         UdpClient UC;
         string[][] userip = new string[10][];
         string[] myports = new string[10];
         int usercount = 0;
-        int portcount =0;
+        int portcount = 0;
         public Form1()
         {
             InitializeComponent();
@@ -23,13 +23,13 @@ namespace UDPMSN
         {
             B_GO.Click -= B_GO_Click;
             B_GO.Click += B_GO_SEND;
-            for (int i = 0; i < portcount;i++ )
+            for (int i = 0; i < portcount; i++)
             {
                 LTh[i] = new Thread(listen);
                 LTh[i].Start(i);
             }
 
-                
+
             B_GO.Text = "傳送訊息";
             text_myport.ReadOnly = true;
             text_yourip.ReadOnly = true;
@@ -64,7 +64,10 @@ namespace UDPMSN
             try
             {
                 UC.Close();
-                LTh.Abort();
+                foreach (Thread t in LTh)
+                {
+                    t.Abort();
+                }
             }
             catch
             {
@@ -88,7 +91,7 @@ namespace UDPMSN
         private void Form1_Load(object sender, EventArgs e)
         {
             text_myip.Text = MYIP();
-            Control.CheckForIllegalCrossThreadCalls = false;
+            CheckForIllegalCrossThreadCalls = false;
         }
 
         private void text_msg_TextChanged(object sender, EventArgs e)
@@ -99,11 +102,11 @@ namespace UDPMSN
 
         private void new_user_Click(object sender, EventArgs e)
         {
-            userip[usercount]=new string[2]{text_yourip.Text,text_yourport.Text};
+            userip[usercount] = new string[2] { text_yourip.Text, text_yourport.Text };
             usercount++;
             user_online.Items.Clear();
             user_online.Items.Add("和你聊天的人：(上限十人)");
-            for(int i=0;i<usercount;i++)
+            for (int i = 0; i < usercount; i++)
             {
                 user_online.Items.Add(userip[i][0] + ":" + userip[i][1]);
             }

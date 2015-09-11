@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace client
 {
@@ -25,7 +25,7 @@ namespace client
             try
             {
                 T.Connect(ep);
-                login.Text="登出";
+                login.Text = "登出";
                 login.Click -= login_Click;
                 login.Click += logout_Click;
                 th = new Thread(listen);
@@ -33,9 +33,10 @@ namespace client
                 th.Start();
                 send("0" + user);
                 msgbox.Text += "已連線到" + serverip.Text + ":" + serverport.Text + "\r\n";
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                msgbox.Text+="發生錯誤："+ex.Message+"\r\n";
+                msgbox.Text += "發生錯誤：" + ex.Message + "\r\n";
                 return;
             }
         }
@@ -58,7 +59,8 @@ namespace client
                 send("9" + myname.Text + "(" + MYIP() + ")");
                 T.Close();
                 msgbox.Text += "與伺服器連線中斷\r\n";
-            }catch
+            }
+            catch
             {
 
             }
@@ -89,18 +91,20 @@ namespace client
         {
             string suser;
             if (sendmsg.Text == "") return;
-            if(myid.SelectedIndex!=0)
+            if (myid.SelectedIndex != 0)
             {
-                suser = "F"+myid.SelectedItem.ToString().Substring(4);
+                suser = "F" + myid.SelectedItem.ToString().Substring(4);
                 msgbox.Text += "你正" + myid.SelectedItem.ToString() + "發送訊息\r\n";
-            }else
+            }
+            else
             {
                 suser = "T" + user;
             }
-            if(onlineuser.SelectedIndex<0)
+            if (onlineuser.SelectedIndex < 0)
             {
                 send("1" + suser + "：\r\n" + sendmsg.Text);
-            }else
+            }
+            else
             {
                 send("2" + suser + "：\r\n" + sendmsg.Text + "|" + onlineuser.SelectedItem);
                 msgbox.Text += "你密" + onlineuser.SelectedItem + "說：\r\n" + sendmsg.Text + "\r\n";
@@ -124,12 +128,12 @@ namespace client
         private void listen()
         {
             EndPoint ep = (EndPoint)T.RemoteEndPoint;
-            Byte[] B=new Byte[1024];
-            int inlenth=0;
+            Byte[] B = new Byte[1024];
+            int inlenth = 0;
             string msg;
             char cmd;
             string str;
-            while(true)
+            while (true)
             {
                 try
                 {
@@ -144,22 +148,22 @@ namespace client
                         logout();
                         th.Abort();
                     }
-                    catch 
-                    { 
+                    catch
+                    {
 
                     }
                 }
-                msg = Encoding.Default.GetString(B,0,inlenth);
+                msg = Encoding.Default.GetString(B, 0, inlenth);
                 cmd = msg[0];
                 str = msg.Substring(1);
-                switch(cmd)
+                switch (cmd)
                 {
                     case 'L':
                         onlineuser.Items.Clear();
                         myid.Items.Clear();
                         myid.Items.Add("發送：");
-                        string[] list=str.Split(',');
-                        foreach(string i in list)
+                        string[] list = str.Split(',');
+                        foreach (string i in list)
                         {
                             onlineuser.Items.Add(i);
                             myid.Items.Add("假冒成：" + i);
@@ -183,7 +187,7 @@ namespace client
                         logout();
                         break;
                     case 'S':
-                        msgbox.Text += str+"\r\n";
+                        msgbox.Text += str + "\r\n";
                         break;
                 }
             }
