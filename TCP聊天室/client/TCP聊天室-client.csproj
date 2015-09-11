@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5E705F0A-15E8-4CDE-83B0-EB7F702DBC11}</ProjectGuid>
+    <ProjectGuid>{DB708AB8-49A7-4288-A011-C0B6DEAC1D9F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GuessNumber</RootNamespace>
-    <AssemblyName>GuessNumber</AssemblyName>
+    <RootNamespace>client</RootNamespace>
+    <AssemblyName>TCP聊天室-client</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
